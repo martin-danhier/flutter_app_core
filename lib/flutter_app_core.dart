@@ -1,7 +1,8 @@
 library flutter_app_core;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+// core
+export 'core/app_core.dart';
+export 'core/navigation_data.dart';
+
+// modules
+export 'modules/modules.dart';
