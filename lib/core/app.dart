@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app_core/core/theme.dart';
 
 // INSPIRED BY THE OFFICIAL MaterialApp ! Most of the code comes from it.
 // I cannot extend the class because _MaterialAppState is private
@@ -30,9 +31,12 @@ class SharedApp extends StatefulWidget {
   final bool debugShowMaterialGrid;
   final bool checkerboardOffscreenLayers;
   final bool showSemanticsDebugger;
-  final Map<String, ThemeData> themes;
+  final Map<String, ExtendedThemeData> themes;
   final String defaultTheme;
-  final ThemeData theme;
+  final ExtendedThemeData theme;
+  final GenerateAppTitle onGenerateTitle;
+  final String initialRoute;
+  final bool debugShowWidgetInspector;
 
   bool get isCupertino {
     return this.platformType == PlatformType.cupertino;
@@ -47,13 +51,13 @@ class SharedApp extends StatefulWidget {
     this.navigatorKey,
     this.home,
     this.routes = const <String, WidgetBuilder>{},
-    // this.initialRoute,
+    this.initialRoute,
     this.onGenerateRoute,
     this.onUnknownRoute,
     this.navigatorObservers = const <NavigatorObserver>[],
     this.builder,
     this.title = '',
-    // this.onGenerateTitle,
+    this.onGenerateTitle,
     // this.color,
     this.theme,
     this.locale,
@@ -64,6 +68,7 @@ class SharedApp extends StatefulWidget {
     this.debugShowMaterialGrid = false,
     this.showPerformanceOverlay = false,
     this.checkerboardRasterCacheImages = false,
+    this.debugShowWidgetInspector = false,
     this.checkerboardOffscreenLayers = false,
     this.showSemanticsDebugger = false,
     this.debugShowCheckedModeBanner = true,
@@ -96,7 +101,7 @@ class SharedApp extends StatefulWidget {
   @override
   _SharedAppState createState() => _state;
 
-  ThemeData getTheme() => _state.getTheme();
+  ExtendedThemeData getTheme() => _state.getTheme();
 
   String getThemeName() => _state.getThemeName();
 
@@ -145,7 +150,7 @@ class _SharedAppState extends State<SharedApp> {
   }
 
   ///made by me :p
-  ThemeData _getTheme() {
+  ExtendedThemeData _getTheme() {
     // single theme
     if (widget.theme != null)
       return widget.theme;
@@ -156,7 +161,7 @@ class _SharedAppState extends State<SharedApp> {
     }
     // fallback theme
     else
-      return ThemeData.light();
+      return ExtendedThemeData.light();
   }
 
   String getThemeName() {
@@ -166,13 +171,13 @@ class _SharedAppState extends State<SharedApp> {
       throw Exception('The theme does not have a name.');
   }
 
-  ThemeData getTheme() {
+  ExtendedThemeData getTheme() {
     if (widget.themes != null)
       return widget.themes[_currentTheme];
     else if (widget.theme != null)
       return widget.theme;
     else
-      return ThemeData.light();
+      return ExtendedThemeData.light();
   }
 
   void setTheme(String newTheme) {
@@ -238,6 +243,17 @@ class _SharedAppState extends State<SharedApp> {
               : MaterialPageRoute<T>(settings: settings, builder: builder),
       routes: widget.routes,
       title: widget.title,
+      onGenerateTitle: widget.onGenerateTitle,
+      initialRoute: widget.initialRoute,
+      inspectorSelectButtonBuilder:
+          (BuildContext context, VoidCallback onPressed) {
+        return FloatingActionButton(
+          child: const Icon(Icons.search),
+          onPressed: onPressed,
+          mini: true,
+        );
+      },
+      debugShowWidgetInspector: widget.debugShowWidgetInspector,
     );
 
     // Made by the Chromium Team (Material App)
@@ -257,30 +273,18 @@ class _SharedAppState extends State<SharedApp> {
     return result;
   }
 
-  Widget _theme(ThemeData theme, Widget child) {
-    return widget.isMaterial
-        ? AnimatedTheme(
-            data: theme,
-            isMaterialAppTheme: true,
-            child: widget.builder != null
-                ? Builder(
-                    builder: (BuildContext context) {
-                      return widget.builder(context, child);
-                    },
-                  )
-                : child,
-          )
-        : Theme(
-            data: theme,
-            isMaterialAppTheme: true,
-            child: widget.builder != null
-                ? Builder(
-                    builder: (BuildContext context) {
-                      return widget.builder(context, child);
-                    },
-                  )
-                : child,
-          );
+  Widget _theme(ExtendedThemeData theme, Widget child) {
+    return CustomTheme(
+      data: theme,
+      isMaterialAppTheme: true,
+      child: widget.builder != null
+          ? Builder(
+              builder: (BuildContext context) {
+                return widget.builder(context, child);
+              },
+            )
+          : child,
+    );
   }
 
   Widget _scroll({Widget child}) {

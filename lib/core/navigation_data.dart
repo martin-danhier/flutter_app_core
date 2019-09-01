@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_core/core/app.dart';
+import 'package:flutter_app_core/core/theme.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 abstract class NavigationData {
@@ -50,6 +51,13 @@ class RootedNavigation extends NavigationData {
   final CupertinoAppData Function(BuildContext) ios;
   final Map<String, WidgetBuilder> routes;
   final String initialRoute;
+  final Route<dynamic> Function(RouteSettings) onGenerateRoute;
+  final Route<dynamic> Function(RouteSettings) onUnknownRoute;
+  final bool debugShowWidgetInspector;
+  final Function(BuildContext, Widget) builder;
+  final ExtendedThemeData theme;
+  final Map<String, ExtendedThemeData> themes;
+  final String defaultTheme;
 
   RootedNavigation({
     this.home,
@@ -71,9 +79,16 @@ class RootedNavigation extends NavigationData {
     this.checkerboardRasterCacheImages = false,
     this.checkerboardOffscreenLayers = false,
     this.showSemanticsDebugger = false,
+    this.debugShowWidgetInspector = false,
     this.debugShowCheckedModeBanner = true,
     this.routes = const <String, WidgetBuilder>{},
     this.initialRoute = '/',
+    this.onGenerateRoute,
+    this.onUnknownRoute,
+    this.builder,
+    this.defaultTheme,
+    this.theme,
+    this.themes,
   })  : assert(routes != null),
         assert(navigatorObservers != null),
         assert(title != null),
@@ -99,39 +114,23 @@ class RootedNavigation extends NavigationData {
       key: key,
       navigatorKey: navigatorKey,
       navigatorObservers: navigatorObservers,
-      
       debugShowCheckedModeBanner: debugShowCheckedModeBanner,
-      // onGenerateTitle: onGenerateTitle,
+      onGenerateTitle: onGenerateTitle,
       checkerboardRasterCacheImages: checkerboardRasterCacheImages,
       showPerformanceOverlay: showPerformanceOverlay,
       showSemanticsDebugger: showSemanticsDebugger,
       debugShowMaterialGrid: debugShowMaterialGrid,
       routes: routes,
-      // initialRoute: initialRoute,
+      initialRoute: initialRoute,
       home: home,
-      builder: (context, widget) => PlatformProvider.of(context).isCupertino
-          ? ScrollConfiguration(
-              child: widget,
-              behavior: _AlwaysCupertinoScrollBehavior(),
-            )
-          : widget,
       title: title,
-      theme: ThemeData.dark(),
+      onGenerateRoute: onGenerateRoute,
+      onUnknownRoute: onUnknownRoute,
+      debugShowWidgetInspector: debugShowWidgetInspector,
+      builder: builder,
+      themes: themes,
+      theme: theme,
+      defaultTheme: defaultTheme,
     );
-  }
-}
-
-/// Made by the Chromium team (CupertinoApp)
-class _AlwaysCupertinoScrollBehavior extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    // Never build any overscroll glow indicators.
-    return child;
-  }
-
-  @override
-  ScrollPhysics getScrollPhysics(BuildContext context) {
-    return const BouncingScrollPhysics();
   }
 }
