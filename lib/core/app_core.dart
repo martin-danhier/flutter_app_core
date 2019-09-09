@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_app_core/core/navigation_data.dart';
 import 'package:flutter_app_core/modules/modules.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart' show PlatformProvider;
+import 'package:flutter/widgets.dart' show StatelessWidget, required, Widget, BuildContext, Builder;
 
 /// TODO: documentation
 class AppCore extends StatelessWidget {
@@ -21,3 +21,4 @@ class AppCore extends StatelessWidget {
   }
 
 }
+
