@@ -11,10 +11,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'
 export 'package:flutter_inner_drawer/inner_drawer.dart'
     show InnerDrawerAnimation, InnerDrawerPosition;
 
-/// With a parallel navigation style, there is no actual root page.
-/// There is a list of root pages accessible from a side menu.
-/// Opening a specific page from the side menu won't keep the root page
-/// in the stack. It is then possible to push new pages.
+/// {@macro flutter_app_core.parallelNavigation}
 class ParallelNavigation extends NavigationData {
   // SharedApp parameters
 
@@ -150,6 +147,18 @@ class ParallelNavigation extends NavigationData {
   /// It allows this object to access the methods of the sidebar manager.
   final _sidebarKey = GlobalKey<_SidebarManagerState>();
 
+  /// {@template flutter_app_core.parallelNavigation}
+  /// With a parallel navigation style, there is no actual root page.
+  /// There is a list of root pages accessible from a side menu.
+  /// 
+  /// The navigation comes with a bunch of tools in order to approach a "instanciate and play" coding style. 
+  /// With this, you avoid more than 700 lines of code.
+  /// 
+  /// Opening a specific page from the side menu (**main routes**) won't keep the root page
+  /// in the stack. It is then possible to push new pages (**secondary routes**).
+  /// 
+  /// You need to provide the routes. See the documentation of the [routes] property.
+  /// {@endtemplate}
   ParallelNavigation({
     // SharedApp parameters
     this.title = '',
@@ -350,6 +359,7 @@ class MaterialDrawerSettings {
   /// Key of the [Drawer] object
   final Key drawerKey;
 
+  /// Contains the settings of the [Drawer] used with material.
   const MaterialDrawerSettings({
     this.elevation = 16.0,
     this.drawerAppBarElevation = 1.0,
@@ -392,6 +402,9 @@ class CupertinoDrawerSettings {
   /// Surprizingly, color of the app bar title.
   final Color appBarTitleColor;
 
+  /// Contains the settings of the [InnerDrawer] used with ios.
+  ///
+  /// The used package is this one: https://pub.dev/packages/flutter_inner_drawer
   const CupertinoDrawerSettings({
     this.animationType = InnerDrawerAnimation.quadratic,
     this.onTapClose = true,
@@ -437,6 +450,15 @@ class DrawerItem {
   final Widget Function(
       BuildContext context, void Function() onTap, bool isSelected) builder;
 
+  /// Contains the properties of a drawer item.
+  ///
+  /// The item is displayed in the drawer list.
+  ///
+  /// The `route` is selected if the tile is tapped.
+  ///
+  /// The `icon` and `name` are the most common way to describe the tile look,
+  /// but you can define a custom widget using the `builder`.
+  /// (in that case, provide neither the name nor the icon)
   const DrawerItem({
     @required this.route,
     this.icon,
@@ -458,20 +480,28 @@ class DrawerItem {
 class _SidebarManager extends StatefulWidget {
   /// The platform style of the drawer
   final PlatformType platform;
+
   /// {@macro flutter_app_core.parallelNavigation.routes}
   final Map<String, WidgetBuilder> routes;
+
   /// {@macro flutter_app_core.parallelNavigation.initialRoute}
   final String initialRoute;
+
   /// The title of the drawer app bar
   final Widget title;
+
   /// The settings of the cupertino drawer
   final CupertinoDrawerSettings Function() cupertino;
+
   /// The settings of the material drawer
   final MaterialDrawerSettings Function() material;
+
   /// The background color of the app bar of the drawer
   final Color barBackgroundColor;
+
   /// The background color of the drawer body
   final Color backgroundColor;
+
   /// {@macro flutter_app_core.parallelNavigation.drawerItems}
   final List<DrawerItem> drawerItems;
 
@@ -517,12 +547,12 @@ class _SidebarManagerState extends State<_SidebarManager> {
 
   /// {@template flutter_app_core.parallelNavigation.navigateTo}
   /// Navigates to the given route.
-  /// 
-  /// It is different from ``Navigator.of(context).pushNamed``: pushNamed pushes the 
+  ///
+  /// It is different from ``Navigator.of(context).pushNamed``: pushNamed pushes the
   /// route on top of the navigator without touching anything else.
-  /// 
+  ///
   /// navigateTo will instead make the stack correspond to the route name/address.
-  /// 
+  ///
   /// For example, `navigateTo('/page/detail/more')` will set the main route to `/page`
   /// and push 'detail' and 'more' on top of that.
   /// {@endtemplate}
