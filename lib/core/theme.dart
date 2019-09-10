@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ExtendedThemeData {
@@ -14,9 +15,52 @@ class ExtendedThemeData {
   /// Instanciates a ExtendedThemeData.
   const ExtendedThemeData({@required this.base, this.custom});
 
-  static light() => ExtendedThemeData(base: ThemeData.light());
-  static dark() => ExtendedThemeData(base: ThemeData.dark());
-  static trueDark() => ExtendedThemeData(base: ThemeData.dark());
+  factory ExtendedThemeData.light() => ExtendedThemeData(
+        base: ThemeData(
+            brightness: Brightness.light,
+            dialogTheme: const DialogTheme(
+              titleTextStyle: const TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.w500,
+                fontSize: 18,
+              ),
+            ),
+            snackBarTheme: const SnackBarThemeData(
+              backgroundColor: const Color(0xff2d2d2d),
+              actionTextColor: Colors.white,
+            ),
+            cupertinoOverrideTheme: const CupertinoThemeData(
+              barBackgroundColor: Colors.blue,
+              textTheme: const CupertinoTextThemeData(
+                navActionTextStyle: const TextStyle(
+                  inherit: false,
+                  fontFamily: '.SF Pro Text',
+                  fontSize: 17.0,
+                  letterSpacing: -0.41,
+                  color: CupertinoColors.white,
+                  decoration: TextDecoration.none,
+                ),
+                navTitleTextStyle: const TextStyle(
+                  inherit: false,
+                  fontFamily: '.SF Pro Text',
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.41,
+                  color: CupertinoColors.white,
+                ),
+              ),
+            )),
+      );
+  factory ExtendedThemeData.dark() => ExtendedThemeData(
+        base: ThemeData(
+          brightness: Brightness.dark,
+        ),
+      );
+  factory ExtendedThemeData.trueDark() => ExtendedThemeData(
+        base: ThemeData(
+          brightness: Brightness.dark,
+        ),
+      );
 }
 
 /// Base class that doesn't do anything.
@@ -41,7 +85,7 @@ class CustomTheme extends StatelessWidget {
   ///
   /// If you want to inherit the base ThemeData instead, you should use
   /// `Theme.of(context)`.
-  /// 
+  ///
   /// `T` is a class extended from CustomThemeData
   static T of<T extends CustomThemeData>(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_InheritedCustomTheme)

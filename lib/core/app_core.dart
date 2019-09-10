@@ -20,5 +20,14 @@ class AppCore extends StatelessWidget {
     );
   }
 
+  Future navigateTo(route){
+    return navigation.navigateTo(route);
+  }
+
+  static AppCore of(BuildContext context){
+    return context.ancestorWidgetOfExactType(AppCore);
+  }
+
+
 }
 

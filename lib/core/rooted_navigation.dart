@@ -83,6 +83,12 @@ class RootedNavigation extends NavigationData {
         assert(debugShowCheckedModeBanner != null);
 
   @override
+  Future navigateTo(String route) {
+    // TODO: implement navigateTo
+    return null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SharedApp(
       platformType: PlatformProvider.of(context).isCupertino

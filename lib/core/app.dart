@@ -209,7 +209,7 @@ class _SharedAppState extends State<SharedApp> {
   @override
   Widget build(BuildContext context) {
     Widget result = WidgetsApp(
-      color: Colors.red,
+      color: Theme.of(context).accentColor,
       showSemanticsDebugger: widget.showSemanticsDebugger,
       debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
       checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
