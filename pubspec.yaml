@@ -11,9 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
   # Platform-aware widgets:
-  flutter_platform_widgets: ^0.12.0
+  flutter_platform_widgets: ^0.20.2
   # iOS style drawer:
-  flutter_inner_drawer: ^0.3.0
+  flutter_inner_drawer: ^0.5.0
 
 dev_dependencies:
   flutter_test:
