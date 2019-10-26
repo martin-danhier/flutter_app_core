@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 
 class ExtendedThemeData {
   /// A classic theme data that is used by most widgets.
@@ -14,6 +15,126 @@ class ExtendedThemeData {
 
   /// Instanciates a ExtendedThemeData.
   const ExtendedThemeData({@required this.base, this.custom});
+
+  ExtendedThemeData setPlatform(TargetPlatform platform) {
+    return this.merge(
+      ExtendedThemeData(
+        base: ThemeData(
+          platform: platform,
+        ),
+      ),
+    );
+  }
+
+  // ExtendedThemeData switchPlatform() {
+  //   TargetPlatform currentPlatform = this.base?.platform ?? Platform.isIOS
+  //       ? TargetPlatform.iOS
+  //       : TargetPlatform.android;
+
+  //   return this.setPlatform(
+  //     currentPlatform == TargetPlatform.iOS
+  //         ? TargetPlatform.android
+  //         : TargetPlatform.iOS,
+  //   );
+  // }
+
+  /// Returns a copy of `this`, overrided by `other`.
+  /// The non-null values of `other` override the corresponding value of `this`.
+  ExtendedThemeData merge(ExtendedThemeData other) {
+    return ExtendedThemeData(
+      base: ThemeData(
+        accentColor: other.base?.accentColor ?? this.base?.accentColor,
+        accentColorBrightness: other.base?.accentColorBrightness ??
+            this.base?.accentColorBrightness,
+        accentIconTheme:
+            other.base?.accentIconTheme ?? this.base?.accentIconTheme,
+        accentTextTheme:
+            other.base?.accentTextTheme ?? this.base?.accentTextTheme,
+        applyElevationOverlayColor: other.base?.applyElevationOverlayColor ??
+            this.base?.applyElevationOverlayColor,
+        backgroundColor:
+            other.base?.backgroundColor ?? this.base?.backgroundColor,
+        bottomAppBarColor:
+            other.base?.bottomAppBarColor ?? this.base?.bottomAppBarColor,
+        brightness: other.base?.brightness ?? this.base?.brightness,
+        buttonColor: other.base?.buttonColor ?? this.base?.buttonColor,
+        canvasColor: other.base?.canvasColor ?? this.base?.canvasColor,
+        cardColor: other.base?.cardColor ?? this.base?.cardColor,
+        cursorColor: other.base?.cursorColor ?? this.base?.cursorColor,
+        dialogBackgroundColor: other.base?.dialogBackgroundColor ??
+            this.base?.dialogBackgroundColor,
+        disabledColor: other.base?.disabledColor ?? this.base?.disabledColor,
+        dividerColor: other.base?.dividerColor ?? this.base?.dividerColor,
+        errorColor: other.base?.errorColor ?? this.base?.errorColor,
+        focusColor: other.base?.focusColor ?? this.base?.focusColor,
+        highlightColor: other.base?.highlightColor ?? this.base?.highlightColor,
+        hintColor: other.base?.hintColor ?? this.base?.hintColor,
+        hoverColor: other.base?.hoverColor ?? this.base?.hoverColor,
+        indicatorColor: other.base?.indicatorColor ?? this.base?.indicatorColor,
+        materialTapTargetSize: other.base?.materialTapTargetSize ??
+            this.base?.materialTapTargetSize,
+        platform: other.base?.platform ?? this.base?.platform,
+        primaryColor: other.base?.primaryColor ?? this.base?.primaryColor,
+        primaryColorBrightness: other.base?.primaryColorBrightness ??
+            this.base?.primaryColorBrightness,
+        primaryColorDark:
+            other.base?.primaryColorDark ?? this.base?.primaryColorDark,
+        primaryColorLight:
+            other.base?.primaryColorLight ?? this.base?.primaryColorLight,
+        scaffoldBackgroundColor: other.base?.scaffoldBackgroundColor ??
+            this.base?.scaffoldBackgroundColor,
+        secondaryHeaderColor:
+            other.base?.secondaryHeaderColor ?? this.base?.secondaryHeaderColor,
+        selectedRowColor:
+            other.base?.selectedRowColor ?? this.base?.selectedRowColor,
+        splashColor: other.base?.splashColor ?? this.base?.splashColor,
+        textSelectionColor:
+            other.base?.textSelectionColor ?? this.base?.textSelectionColor,
+        textSelectionHandleColor: other.base?.textSelectionHandleColor ??
+            this.base?.textSelectionHandleColor,
+        toggleableActiveColor: other.base?.toggleableActiveColor ??
+            this.base?.toggleableActiveColor,
+        unselectedWidgetColor: other.base?.unselectedWidgetColor ??
+            this.base?.unselectedWidgetColor,
+        typography: other.base?.typography ?? this.base?.typography,
+        buttonTheme: other.base?.buttonTheme ?? this.base?.buttonTheme,
+        appBarTheme: other.base?.appBarTheme ?? this.base?.appBarTheme,
+        bannerTheme: other.base?.bannerTheme ?? this.base?.bannerTheme,
+        bottomAppBarTheme:
+            other.base?.bottomAppBarTheme ?? this.base?.bottomAppBarTheme,
+        bottomSheetTheme:
+            other.base?.bottomSheetTheme ?? this.base?.bottomSheetTheme,
+        cardTheme: other.base?.cardTheme ?? this.base?.cardTheme,
+        chipTheme: other.base?.chipTheme ?? this.base?.chipTheme,
+        colorScheme: other.base?.colorScheme ?? this.base?.colorScheme,
+        cupertinoOverrideTheme: other.base?.cupertinoOverrideTheme ??
+            this.base?.cupertinoOverrideTheme,
+        dialogTheme: other.base?.dialogTheme ?? this.base?.dialogTheme,
+        dividerTheme: other.base?.dividerTheme ?? this.base?.dividerTheme,
+        floatingActionButtonTheme: other.base?.floatingActionButtonTheme ??
+            this.base?.floatingActionButtonTheme,
+        iconTheme: other.base?.iconTheme ?? this.base?.iconTheme,
+        inputDecorationTheme:
+            other.base?.inputDecorationTheme ?? this.base?.inputDecorationTheme,
+        pageTransitionsTheme:
+            other.base?.pageTransitionsTheme ?? this.base?.pageTransitionsTheme,
+        popupMenuTheme: other.base?.popupMenuTheme ?? this.base?.popupMenuTheme,
+        primaryIconTheme:
+            other.base?.primaryIconTheme ?? this.base?.primaryIconTheme,
+        primaryTextTheme:
+            other.base?.primaryTextTheme ?? this.base?.primaryTextTheme,
+        sliderTheme: other.base?.sliderTheme ?? this.base?.sliderTheme,
+        snackBarTheme: other.base?.snackBarTheme ?? this.base?.snackBarTheme,
+        splashFactory: other.base?.splashFactory ?? this.base?.splashFactory,
+        tabBarTheme: other.base?.tabBarTheme ?? this.base?.tabBarTheme,
+        textTheme: other.base?.textTheme ?? this.base?.textTheme,
+        toggleButtonsTheme:
+            other.base?.toggleButtonsTheme ?? this.base?.toggleButtonsTheme,
+        tooltipTheme: other.base?.tooltipTheme ?? this.base?.tooltipTheme,
+      ),
+      custom: other.custom ?? this.custom,
+    );
+  }
 
   factory ExtendedThemeData.fromBrightness(Brightness brightness) {
     switch (brightness) {

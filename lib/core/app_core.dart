@@ -15,9 +15,8 @@ class AppCore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformProvider(
-      builder: (_) => Builder(builder: navigation.build),
-    );
+    return Builder(builder: navigation.build);
+    
   }
 
   Future navigateTo(route){
