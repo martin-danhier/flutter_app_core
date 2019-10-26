@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_app_core/core/app.dart';
 import 'package:flutter_app_core/core/navigation_data.dart';
 import 'package:flutter_app_core/core/theme.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 /// A classic navigation style. The app has a root page, from which it is
 /// possible to push new routes. This is the default navigation style of Flutter.
@@ -29,8 +28,6 @@ class RootedNavigation extends NavigationData {
   final bool showPerformanceOverlay;
   final bool showSemanticsDebugger;
   final bool debugShowMaterialGrid;
-  final MaterialAppData Function(BuildContext) android;
-  final CupertinoAppData Function(BuildContext) ios;
   final Map<String, WidgetBuilder> routes;
   final String initialRoute;
   final Route<dynamic> Function(RouteSettings) onGenerateRoute;
@@ -54,8 +51,6 @@ class RootedNavigation extends NavigationData {
     this.navigatorKey,
     this.navigatorObservers = const <NavigatorObserver>[],
     this.onGenerateTitle,
-    this.android,
-    this.ios,
     this.debugShowMaterialGrid = false,
     this.showPerformanceOverlay = false,
     this.checkerboardRasterCacheImages = false,
@@ -91,9 +86,6 @@ class RootedNavigation extends NavigationData {
   Widget build(BuildContext context) {
     return SharedApp(
       locale: locale,
-      // platformType: PlatformProvider.of(context).platform == TargetPlatform.iOS
-      //     ? PlatformType.cupertino
-      //     : PlatformType.material,
       localeListResolutionCallback: localeListResolutionCallback,
       localeResolutionCallback: localeResolutionCallback,
       localizationsDelegates: localizationsDelegates,

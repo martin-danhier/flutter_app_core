@@ -4,8 +4,6 @@ import 'package:flutter_app_core/core/app.dart';
 import 'package:flutter_app_core/core/navigation_data.dart';
 import 'package:flutter_app_core/flutter_app_core.dart';
 import 'package:flutter_app_core/modules/modules.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'
-    show PlatformProvider;
 import 'package:flutter/widgets.dart'
     show StatelessWidget, required, Widget, BuildContext, Builder;
 

@@ -10,8 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # Platform-aware widgets:
-  flutter_platform_widgets: ^0.20.2
   # iOS style drawer:
   flutter_inner_drawer: ^0.5.0
 
