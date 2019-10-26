@@ -4,9 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_app_core/core/app.dart';
 import 'package:flutter_app_core/core/navigation_data.dart';
 import 'package:flutter_app_core/core/theme.dart';
+import 'package:flutter_app_core/flutter_app_core.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'
-    show PlatformProvider;
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 export 'package:flutter_inner_drawer/inner_drawer.dart'
     show InnerDrawerAnimation, InnerDrawerDirection;
@@ -292,7 +292,13 @@ class ParallelNavigation extends NavigationData {
   /// build the app with a side bar manager that can handle the parallelism
   @override
   Widget build(BuildContext context) {
+    PlatformType platform =
+        PlatformProvider.of(context).platform == TargetPlatform.iOS
+            ? PlatformType.cupertino
+            : PlatformType.material;
+
     return SharedApp(
+      platformType: platform,
       locale: locale,
       localeListResolutionCallback: localeListResolutionCallback,
       localeResolutionCallback: localeResolutionCallback,
@@ -310,6 +316,7 @@ class ParallelNavigation extends NavigationData {
       debugShowMaterialGrid: debugShowMaterialGrid,
       routes: routes,
       home: _SidebarManager(
+        platform: platform,
         routes: routes,
         initialRoute: initialRoute,
         title: drawerTitle,
@@ -403,7 +410,7 @@ class CupertinoDrawerSettings {
     this.animationType = InnerDrawerAnimation.quadratic,
     this.onTapClose = true,
     this.onDrawerToggled,
-    this.offset,
+    this.offset = 0.4,
     this.swipe = true,
     this.colorTransition,
     this.boxShadow,
@@ -472,6 +479,9 @@ class DrawerItem {
 /// - Generates the drawer from [drawerItems]
 /// - Handle the base navigation following the [routes]
 class _SidebarManager extends StatefulWidget {
+  /// The platform style of the drawer
+  final PlatformType platform;
+
   /// {@macro flutter_app_core.parallelNavigation.routes}
   final Map<String, WidgetBuilder> routes;
 
@@ -498,6 +508,7 @@ class _SidebarManager extends StatefulWidget {
 
   const _SidebarManager({
     this.title,
+    this.platform = PlatformType.material,
     @required this.routes,
     @required this.initialRoute,
     this.cupertino,
@@ -506,7 +517,8 @@ class _SidebarManager extends StatefulWidget {
     this.backgroundColor,
     this.drawerItems,
     Key key,
-  }) : super(key: key);
+  })  : assert(platform != null),
+        super(key: key);
 
   @override
   _SidebarManagerState createState() => _SidebarManagerState();
@@ -526,8 +538,8 @@ class _SidebarManagerState extends State<_SidebarManager> {
   Widget build(BuildContext context) {
     Widget child = widget.routes[selectedRoute](context);
 
-    switch (Theme.of(context).platform) {
-      case TargetPlatform.iOS:
+    switch (widget.platform) {
+      case PlatformType.cupertino:
         return _buildCupertino(child);
       default:
         return _buildMaterial(child);
@@ -649,6 +661,23 @@ class _SidebarManagerState extends State<_SidebarManager> {
   Widget _buildCupertino(Widget child) {
     CupertinoDrawerSettings settings = _getCupertinoSettings();
 
+    // get nav bar color
+    Brightness brightness = Theme.of(context).brightness ?? Brightness.light;
+
+    Color navBarColor = settings.appBarTitleColor ??
+        Theme.of(context).textTheme?.title?.color ??
+        ExtendedThemeData.fromBrightness(brightness).base.textTheme.title.color;
+
+    TextStyle navBarTextStyle = Theme.of(context)
+            ?.cupertinoOverrideTheme
+            ?.textTheme
+            ?.navTitleTextStyle ??
+        ExtendedThemeData.fromBrightness(brightness)
+            .base
+            .cupertinoOverrideTheme
+            .textTheme
+            .navTitleTextStyle;
+
     return InnerDrawer(
       leftChild: CupertinoPageScaffold(
         child: Drawer(
@@ -658,16 +687,11 @@ class _SidebarManagerState extends State<_SidebarManager> {
         navigationBar: CupertinoNavigationBar(
           middle: DefaultTextStyle(
             child: widget.title,
-            style: Theme.of(context)
-                .cupertinoOverrideTheme
-                .textTheme
-                .navTitleTextStyle
-                .merge(
-                  TextStyle(
-                    color: settings.appBarTitleColor ??
-                        Theme.of(context).textTheme.title.color,
-                  ),
-                ),
+            style: navBarTextStyle.merge(
+              TextStyle(
+                color: navBarColor,
+              ),
+            ),
           ),
           automaticallyImplyLeading: false,
           backgroundColor:
@@ -680,7 +704,7 @@ class _SidebarManagerState extends State<_SidebarManager> {
       onTapClose: settings.onTapClose,
       innerDrawerCallback: settings.onDrawerToggled,
       scaffold: child,
-      leftOffset: settings.offset,
+      leftOffset: settings.offset ?? 0.4,
       swipe: settings.swipe,
       colorTransition: settings.colorTransition,
       boxShadow: settings.boxShadow,

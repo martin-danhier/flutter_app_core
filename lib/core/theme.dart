@@ -15,6 +15,15 @@ class ExtendedThemeData {
   /// Instanciates a ExtendedThemeData.
   const ExtendedThemeData({@required this.base, this.custom});
 
+  factory ExtendedThemeData.fromBrightness(Brightness brightness) {
+    switch (brightness) {
+      case Brightness.light:
+        return ExtendedThemeData.light();
+      default:
+        return ExtendedThemeData.dark();
+    }
+  }
+
   factory ExtendedThemeData.light() => ExtendedThemeData(
         base: ThemeData(
             brightness: Brightness.light,

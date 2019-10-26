@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_core/core/app.dart';
 import 'package:flutter_app_core/core/navigation_data.dart';
@@ -92,6 +91,9 @@ class RootedNavigation extends NavigationData {
   Widget build(BuildContext context) {
     return SharedApp(
       locale: locale,
+      platformType: PlatformProvider.of(context).platform == TargetPlatform.iOS
+          ? PlatformType.cupertino
+          : PlatformType.material,
       localeListResolutionCallback: localeListResolutionCallback,
       localeResolutionCallback: localeResolutionCallback,
       localizationsDelegates: localizationsDelegates,

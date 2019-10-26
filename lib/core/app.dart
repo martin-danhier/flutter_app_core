@@ -7,6 +7,8 @@ import 'package:flutter_app_core/core/theme.dart';
 // I cannot extend the class because _MaterialAppState is private
 // Copyright goes to the Chromium Team
 
+enum PlatformType { material, cupertino }
+
 class SharedApp extends StatefulWidget {
   final _SharedAppState _state = _SharedAppState();
   final Widget Function(BuildContext, Widget) builder;
@@ -34,13 +36,14 @@ class SharedApp extends StatefulWidget {
   final GenerateAppTitle onGenerateTitle;
   final String initialRoute;
   final bool debugShowWidgetInspector;
+  final PlatformType platformType;
 
   bool get isCupertino {
-    return getTheme().base.platform == TargetPlatform.iOS;
+    return this.platformType == PlatformType.cupertino;
   }
 
   bool get isMaterial {
-    return getTheme().base.platform != TargetPlatform.iOS;
+    return this.platformType == PlatformType.material;
   }
 
   SharedApp({
@@ -71,6 +74,7 @@ class SharedApp extends StatefulWidget {
     this.debugShowCheckedModeBanner = true,
     this.themes,
     this.defaultTheme,
+    this.platformType = PlatformType.material,
   })  : assert(routes != null),
         assert(navigatorObservers != null),
         assert(title != null),
@@ -80,6 +84,7 @@ class SharedApp extends StatefulWidget {
         assert(checkerboardOffscreenLayers != null),
         assert(showSemanticsDebugger != null),
         assert(debugShowCheckedModeBanner != null),
+        assert(platformType != null, "A 'platformType' is required."),
         assert(
             (theme != null && themes == null && defaultTheme == null) ||
                 (theme == null && themes != null && defaultTheme != null) ||
@@ -145,7 +150,7 @@ class _SharedAppState extends State<SharedApp> {
   }
 
   ///made by me :p
-  ExtendedThemeData _getTheme() {
+  ExtendedThemeData getTheme() {
     // single theme
     if (widget.theme != null)
       return widget.theme;
@@ -164,15 +169,6 @@ class _SharedAppState extends State<SharedApp> {
       return _currentTheme;
     else
       throw Exception('The theme does not have a name.');
-  }
-
-  ExtendedThemeData getTheme() {
-    if (widget.themes != null)
-      return widget.themes[_currentTheme];
-    else if (widget.theme != null)
-      return widget.theme;
-    else
-      return ExtendedThemeData.light();
   }
 
   void setTheme(String newTheme) {
@@ -225,7 +221,7 @@ class _SharedAppState extends State<SharedApp> {
       builder: (BuildContext context, Widget child) {
         // Use a light theme, dark theme, or fallback theme.
         return _scroll(
-          child: _theme(_getTheme(), child),
+          child: _theme(getTheme(), child),
         );
       },
       navigatorKey: widget.navigatorKey,
