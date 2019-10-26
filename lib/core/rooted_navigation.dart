@@ -91,9 +91,9 @@ class RootedNavigation extends NavigationData {
   Widget build(BuildContext context) {
     return SharedApp(
       locale: locale,
-      platformType: PlatformProvider.of(context).platform == TargetPlatform.iOS
-          ? PlatformType.cupertino
-          : PlatformType.material,
+      // platformType: PlatformProvider.of(context).platform == TargetPlatform.iOS
+      //     ? PlatformType.cupertino
+      //     : PlatformType.material,
       localeListResolutionCallback: localeListResolutionCallback,
       localeResolutionCallback: localeResolutionCallback,
       localizationsDelegates: localizationsDelegates,

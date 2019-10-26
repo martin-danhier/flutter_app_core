@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app_core/core/theme.dart';
 
@@ -36,14 +37,14 @@ class SharedApp extends StatefulWidget {
   final GenerateAppTitle onGenerateTitle;
   final String initialRoute;
   final bool debugShowWidgetInspector;
-  final PlatformType platformType;
+  // final PlatformType platformType;
 
   bool get isCupertino {
-    return this.platformType == PlatformType.cupertino;
+    return this.getTheme().base?.platform == TargetPlatform.iOS;
   }
 
   bool get isMaterial {
-    return this.platformType == PlatformType.material;
+     return this.getTheme().base?.platform != TargetPlatform.iOS;
   }
 
   SharedApp({
@@ -73,8 +74,8 @@ class SharedApp extends StatefulWidget {
     this.showSemanticsDebugger = false,
     this.debugShowCheckedModeBanner = true,
     this.themes,
+    // this.platformType,
     this.defaultTheme,
-    this.platformType = PlatformType.material,
   })  : assert(routes != null),
         assert(navigatorObservers != null),
         assert(title != null),
@@ -84,7 +85,6 @@ class SharedApp extends StatefulWidget {
         assert(checkerboardOffscreenLayers != null),
         assert(showSemanticsDebugger != null),
         assert(debugShowCheckedModeBanner != null),
-        assert(platformType != null, "A 'platformType' is required."),
         assert(
             (theme != null && themes == null && defaultTheme == null) ||
                 (theme == null && themes != null && defaultTheme != null) ||
@@ -103,7 +103,13 @@ class SharedApp extends StatefulWidget {
 
   ExtendedThemeData getTheme() => _state.getTheme();
 
+  static _SharedAppState of(BuildContext context){
+    return context.ancestorStateOfType(TypeMatcher<_SharedAppState>());
+  }
+
   String getThemeName() => _state.getThemeName();
+
+  void setPlatform(TargetPlatform platform) => _state.setPlatform(platform);
 
   void setTheme(String newTheme) => _state.setTheme(newTheme);
 }
@@ -112,6 +118,7 @@ class _SharedAppState extends State<SharedApp> {
   HeroController _heroController;
   List<NavigatorObserver> _navigatorObservers;
   String _currentTheme;
+  TargetPlatform _platform;
 
   ///copyright chromium team from MaterialApp
   @override
@@ -119,6 +126,7 @@ class _SharedAppState extends State<SharedApp> {
     super.initState();
     _heroController = HeroController(createRectTween: _createRectTween);
     _updateNavigator();
+    _platform = getTheme().base?.platform ?? (Platform.isIOS ? TargetPlatform.iOS : TargetPlatform.android);
   }
 
   ///copyright chromium team from MaterialApp
@@ -149,19 +157,30 @@ class _SharedAppState extends State<SharedApp> {
     }
   }
 
+
+  TargetPlatform getPlatform(){
+    return _platform;
+  }
+
+  void setPlatform(TargetPlatform platform){
+    setState(() {
+      _platform = platform;
+    });
+  }
+
   ///made by me :p
   ExtendedThemeData getTheme() {
     // single theme
     if (widget.theme != null)
-      return widget.theme;
+      return widget.theme.setPlatform(_platform);
     // theme map
     else if (widget.defaultTheme != null && widget.themes != null) {
       if (_currentTheme == null) _currentTheme = widget.defaultTheme;
-      return widget.themes[_currentTheme];
+      return widget.themes[_currentTheme].setPlatform(_platform);
     }
     // fallback theme
     else
-      return ExtendedThemeData.light();
+      return ExtendedThemeData.light().setPlatform(_platform);
   }
 
   String getThemeName() {
@@ -229,7 +248,7 @@ class _SharedAppState extends State<SharedApp> {
       onGenerateRoute: widget.onGenerateRoute,
       onUnknownRoute: widget.onUnknownRoute,
       pageRouteBuilder: <T>(RouteSettings settings, WidgetBuilder builder) =>
-          widget.isCupertino
+          getTheme().base?.platform == TargetPlatform.iOS
               ? CupertinoPageRoute(settings: settings, builder: builder)
               : MaterialPageRoute<T>(settings: settings, builder: builder),
       routes: widget.routes,
@@ -281,7 +300,7 @@ class _SharedAppState extends State<SharedApp> {
   Widget _scroll({Widget child}) {
     return ScrollConfiguration(
       child: child,
-      behavior: widget.isCupertino
+      behavior: getTheme().base?.platform == TargetPlatform.iOS
           ? _CupertinoScrollBehavior()
           : _MaterialScrollBehavior(),
     );

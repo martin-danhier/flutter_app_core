@@ -6,7 +6,6 @@ import 'package:flutter_app_core/core/navigation_data.dart';
 import 'package:flutter_app_core/core/theme.dart';
 import 'package:flutter_app_core/flutter_app_core.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 export 'package:flutter_inner_drawer/inner_drawer.dart'
     show InnerDrawerAnimation, InnerDrawerDirection;
@@ -292,13 +291,7 @@ class ParallelNavigation extends NavigationData {
   /// build the app with a side bar manager that can handle the parallelism
   @override
   Widget build(BuildContext context) {
-    PlatformType platform =
-        PlatformProvider.of(context).platform == TargetPlatform.iOS
-            ? PlatformType.cupertino
-            : PlatformType.material;
-
     return SharedApp(
-      platformType: platform,
       locale: locale,
       localeListResolutionCallback: localeListResolutionCallback,
       localeResolutionCallback: localeResolutionCallback,
@@ -316,7 +309,6 @@ class ParallelNavigation extends NavigationData {
       debugShowMaterialGrid: debugShowMaterialGrid,
       routes: routes,
       home: _SidebarManager(
-        platform: platform,
         routes: routes,
         initialRoute: initialRoute,
         title: drawerTitle,
@@ -480,7 +472,7 @@ class DrawerItem {
 /// - Handle the base navigation following the [routes]
 class _SidebarManager extends StatefulWidget {
   /// The platform style of the drawer
-  final PlatformType platform;
+  // final PlatformType platform;
 
   /// {@macro flutter_app_core.parallelNavigation.routes}
   final Map<String, WidgetBuilder> routes;
@@ -508,7 +500,7 @@ class _SidebarManager extends StatefulWidget {
 
   const _SidebarManager({
     this.title,
-    this.platform = PlatformType.material,
+    // this.platform = PlatformType.material,
     @required this.routes,
     @required this.initialRoute,
     this.cupertino,
@@ -517,8 +509,7 @@ class _SidebarManager extends StatefulWidget {
     this.backgroundColor,
     this.drawerItems,
     Key key,
-  })  : assert(platform != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   _SidebarManagerState createState() => _SidebarManagerState();
@@ -538,8 +529,8 @@ class _SidebarManagerState extends State<_SidebarManager> {
   Widget build(BuildContext context) {
     Widget child = widget.routes[selectedRoute](context);
 
-    switch (widget.platform) {
-      case PlatformType.cupertino:
+    switch (Theme.of(context).platform) {
+      case TargetPlatform.iOS:
         return _buildCupertino(child);
       default:
         return _buildMaterial(child);
