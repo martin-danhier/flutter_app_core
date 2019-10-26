@@ -91,9 +91,6 @@ class RootedNavigation extends NavigationData {
   @override
   Widget build(BuildContext context) {
     return SharedApp(
-      platformType: PlatformProvider.of(context).isCupertino
-          ? PlatformType.cupertino
-          : PlatformType.material,
       locale: locale,
       localeListResolutionCallback: localeListResolutionCallback,
       localeResolutionCallback: localeResolutionCallback,

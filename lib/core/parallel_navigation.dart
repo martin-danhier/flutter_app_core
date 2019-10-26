@@ -9,7 +9,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart'
     show PlatformProvider;
 
 export 'package:flutter_inner_drawer/inner_drawer.dart'
-    show InnerDrawerAnimation, InnerDrawerPosition;
+    show InnerDrawerAnimation, InnerDrawerDirection;
 
 /// {@macro flutter_app_core.parallelNavigation}
 class ParallelNavigation extends NavigationData {
@@ -150,13 +150,13 @@ class ParallelNavigation extends NavigationData {
   /// {@template flutter_app_core.parallelNavigation}
   /// With a parallel navigation style, there is no actual root page.
   /// There is a list of root pages accessible from a side menu.
-  /// 
-  /// The navigation comes with a bunch of tools in order to approach a "instanciate and play" coding style. 
+  ///
+  /// The navigation comes with a bunch of tools in order to approach a "instanciate and play" coding style.
   /// With this, you avoid more than 700 lines of code.
-  /// 
+  ///
   /// Opening a specific page from the side menu (**main routes**) won't keep the root page
   /// in the stack. It is then possible to push new pages (**secondary routes**).
-  /// 
+  ///
   /// You need to provide the routes. See the documentation of the [routes] property.
   /// {@endtemplate}
   ParallelNavigation({
@@ -292,12 +292,7 @@ class ParallelNavigation extends NavigationData {
   /// build the app with a side bar manager that can handle the parallelism
   @override
   Widget build(BuildContext context) {
-    PlatformType platform = PlatformProvider.of(context).isCupertino
-        ? PlatformType.cupertino
-        : PlatformType.material;
-
     return SharedApp(
-      platformType: platform,
       locale: locale,
       localeListResolutionCallback: localeListResolutionCallback,
       localeResolutionCallback: localeResolutionCallback,
@@ -315,7 +310,6 @@ class ParallelNavigation extends NavigationData {
       debugShowMaterialGrid: debugShowMaterialGrid,
       routes: routes,
       home: _SidebarManager(
-        platform: platform,
         routes: routes,
         initialRoute: initialRoute,
         title: drawerTitle,
@@ -397,7 +391,7 @@ class CupertinoDrawerSettings {
   final Key drawerKey;
 
   /// Position of the drawer
-  final InnerDrawerPosition position;
+  final InnerDrawerDirection direction;
 
   /// Surprizingly, color of the app bar title.
   final Color appBarTitleColor;
@@ -415,9 +409,9 @@ class CupertinoDrawerSettings {
     this.boxShadow,
     this.drawerKey,
     this.appBarTitleColor,
-    this.position = InnerDrawerPosition.start,
+    this.direction = InnerDrawerDirection.start,
   })  : assert(animationType != null),
-        assert(position != null);
+        assert(direction != null);
 }
 
 /// Contains the properties of a drawer item.
@@ -478,9 +472,6 @@ class DrawerItem {
 /// - Generates the drawer from [drawerItems]
 /// - Handle the base navigation following the [routes]
 class _SidebarManager extends StatefulWidget {
-  /// The platform style of the drawer
-  final PlatformType platform;
-
   /// {@macro flutter_app_core.parallelNavigation.routes}
   final Map<String, WidgetBuilder> routes;
 
@@ -507,7 +498,6 @@ class _SidebarManager extends StatefulWidget {
 
   const _SidebarManager({
     this.title,
-    this.platform = PlatformType.material,
     @required this.routes,
     @required this.initialRoute,
     this.cupertino,
@@ -516,8 +506,7 @@ class _SidebarManager extends StatefulWidget {
     this.backgroundColor,
     this.drawerItems,
     Key key,
-  })  : assert(platform != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   _SidebarManagerState createState() => _SidebarManagerState();
@@ -537,8 +526,8 @@ class _SidebarManagerState extends State<_SidebarManager> {
   Widget build(BuildContext context) {
     Widget child = widget.routes[selectedRoute](context);
 
-    switch (widget.platform) {
-      case PlatformType.cupertino:
+    switch (Theme.of(context).platform) {
+      case TargetPlatform.iOS:
         return _buildCupertino(child);
       default:
         return _buildMaterial(child);
@@ -661,7 +650,7 @@ class _SidebarManagerState extends State<_SidebarManager> {
     CupertinoDrawerSettings settings = _getCupertinoSettings();
 
     return InnerDrawer(
-      child: CupertinoPageScaffold(
+      leftChild: CupertinoPageScaffold(
         child: Drawer(
           elevation: 0.0,
           child: _buildDrawerContent(),
@@ -687,16 +676,15 @@ class _SidebarManagerState extends State<_SidebarManager> {
         backgroundColor:
             widget.backgroundColor ?? Theme.of(context).canvasColor,
       ),
-      animationType: settings.animationType,
+      leftAnimationType: settings.animationType,
       onTapClose: settings.onTapClose,
       innerDrawerCallback: settings.onDrawerToggled,
       scaffold: child,
-      offset: settings.offset,
+      leftOffset: settings.offset,
       swipe: settings.swipe,
       colorTransition: settings.colorTransition,
       boxShadow: settings.boxShadow,
       key: settings.drawerKey,
-      position: settings.position,
     );
   }
 }

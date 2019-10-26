@@ -7,15 +7,12 @@ import 'package:flutter_app_core/core/theme.dart';
 // I cannot extend the class because _MaterialAppState is private
 // Copyright goes to the Chromium Team
 
-enum PlatformType { material, cupertino }
-
 class SharedApp extends StatefulWidget {
   final _SharedAppState _state = _SharedAppState();
   final Widget Function(BuildContext, Widget) builder;
   final Widget home;
   final Key navigatorKey;
   final List<NavigatorObserver> navigatorObservers;
-  final PlatformType platformType;
   final RouteFactory onGenerateRoute;
   final RouteFactory onUnknownRoute;
   final Map<String, WidgetBuilder> routes;
@@ -39,11 +36,11 @@ class SharedApp extends StatefulWidget {
   final bool debugShowWidgetInspector;
 
   bool get isCupertino {
-    return this.platformType == PlatformType.cupertino;
+    return getTheme().base.platform == TargetPlatform.iOS;
   }
 
   bool get isMaterial {
-    return this.platformType == PlatformType.material;
+    return getTheme().base.platform != TargetPlatform.iOS;
   }
 
   SharedApp({
@@ -72,7 +69,6 @@ class SharedApp extends StatefulWidget {
     this.checkerboardOffscreenLayers = false,
     this.showSemanticsDebugger = false,
     this.debugShowCheckedModeBanner = true,
-    this.platformType = PlatformType.material,
     this.themes,
     this.defaultTheme,
   })  : assert(routes != null),
@@ -84,7 +80,6 @@ class SharedApp extends StatefulWidget {
         assert(checkerboardOffscreenLayers != null),
         assert(showSemanticsDebugger != null),
         assert(debugShowCheckedModeBanner != null),
-        assert(platformType != null, "A 'platformType' is required."),
         assert(
             (theme != null && themes == null && defaultTheme == null) ||
                 (theme == null && themes != null && defaultTheme != null) ||
